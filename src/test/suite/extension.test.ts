@@ -1,8 +1,9 @@
 import * as assert from "assert";
 import * as vscode from "vscode";
-import { Task } from "../src/task";
-import { ConfigLoader } from "../src/configLoader";
-import { TaskRunner } from "../src/taskRunner";
+import { Task } from "../../task";
+import { ConfigLoader } from "../../configLoader";
+import { TaskRunner } from "../../taskRunner";
+import * as sinon from "sinon";
 
 suite("QuickRun Tests", () => {
   test("Task Model", () => {
@@ -32,20 +33,20 @@ suite("QuickRun Tests", () => {
 
   test("ConfigLoader parses valid config correctly", () => {
     const jsonConfig = `{
-			"tasks": {
-				"build": {"run": "npm run build", "pre": []},
-				"test": {"run": "npm test", "pre": ["build"]}
-			},
-			"groups": {
-				"Frontend": {
-					"dev": {"run": "npm run dev", "pre": ["install"]},
-					"install": {"run": "npm install", "pre": []}
-				}
-			}
-		}`;
+      "tasks": {
+        "build": {"run": "npm run build", "pre": []},
+        "test": {"run": "npm test", "pre": ["build"]}
+      },
+      "groups": {
+        "Frontend": {
+          "dev": {"run": "npm run dev", "pre": ["install"]},
+          "install": {"run": "npm install", "pre": []}
+        }
+      }
+    }`;
 
     const config = JSON.parse(jsonConfig);
-    const tasks = (ConfigLoader as any).parseConfig(config);
+    const tasks = ConfigLoader.parseConfig(config);
 
     assert.strictEqual(tasks.length, 4);
 
@@ -64,40 +65,30 @@ suite("QuickRun Tests", () => {
 suite("TaskRunner Tests", () => {
   test("Terminal reuse", async () => {
     const task = new Task("test-task", 'echo "test"', [], undefined, "/test");
+    const createdTerminals: vscode.Terminal[] = [];
 
-    let createdTerminals: vscode.Terminal[] = [];
     const mockTerminal = {
       name: `QuickRun: ${task.fullName}`,
       show: () => {},
       sendText: () => {},
       dispose: () => {},
-    };
+    } as unknown as vscode.Terminal;
 
-    const originalWindow = vscode.window;
-    (vscode.window as any) = {
-      createTerminal: () => {
-        createdTerminals.push(mockTerminal as any);
+    const createTerminalStub = sinon
+      .stub(vscode.window, "createTerminal")
+      .callsFake(() => {
+        createdTerminals.push(mockTerminal);
         return mockTerminal;
-      },
-      terminals: createdTerminals,
-    };
+      });
 
     const taskRunner = new TaskRunner([task]);
 
     await taskRunner.runTask(task);
-    assert.strictEqual(
-      createdTerminals.length,
-      1,
-      "First run should create a new terminal",
-    );
+    assert.strictEqual(createdTerminals.length, 1);
 
     await taskRunner.runTask(task);
-    assert.strictEqual(
-      createdTerminals.length,
-      1,
-      "Second run should reuse existing terminal",
-    );
+    assert.strictEqual(createdTerminals.length, 1);
 
-    (vscode.window as any) = originalWindow;
+    createTerminalStub.restore();
   });
 });

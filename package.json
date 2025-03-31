@@ -139,21 +139,27 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
+    "lint": "eslint src",
     "test": "node ./out/test/runTest.js",
     "format": "prettier --write \"src/**/*.ts\""
   },
   "devDependencies": {
-    "@types/vscode": "^1.85.0",
     "@types/glob": "^7.2.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "20.x",
+    "@types/sinon": "^17.0.4",
+    "@types/vscode": "^1.85.0",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
+    "@vscode/test-electron": "^2.4.1",
     "eslint": "^8.56.0",
     "glob": "^7.2.3",
     "mocha": "^10.2.0",
     "prettier": "^3.1.0",
+    "sinon": "^20.0.0",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "tslib": "^2.8.1"
   }
 }

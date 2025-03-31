@@ -2,12 +2,29 @@
   "name": "quickrun",
   "displayName": "QuickRun",
   "description": "Quickly run and manage tasks from VS Code",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "publisher": "pavelpicka",
   "author": {
     "name": "Pavel Picka"
   },
   "license": "BSD-3-Clause",
+  "icon": "resources/quickrun-icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pavelpicka/vscode-quickrun"
+  },
+  "homepage": "https://github.com/pavelpicka/vscode-quickrun",
+  "bugs": {
+    "url": "https://github.com/pavelpicka/vscode-quickrun/issues"
+  },
+  "keywords": [
+    "task",
+    "runner",
+    "task-runner",
+    "productivity",
+    "terminal",
+    "automation"
+  ],
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -121,7 +138,7 @@
         {
           "id": "quickrun-explorer",
           "title": "QuickRun",
-          "icon": "$(play)"
+          "icon": "resources/quickrun-icon.png"
         }
       ]
     },
@@ -141,7 +158,9 @@
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "node ./out/test/runTest.js",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "package": "vsce package",
+    "publish": "vsce publish"
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",

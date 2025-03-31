@@ -1,6 +1,12 @@
 # QuickRun
 
+[![Version](https://img.shields.io/visual-studio-marketplace/v/pavelpicka.quickrun)](https://marketplace.visualstudio.com/items?itemName=pavelpicka.quickrun)
+[![Downloads](https://img.shields.io/visual-studio-marketplace/d/pavelpicka.quickrun)](https://marketplace.visualstudio.com/items?itemName=pavelpicka.quickrun)
+[![License](https://img.shields.io/github/license/pavelpicka/vscode-quickrun)](https://github.com/pavelpicka/vscode-quickrun/blob/main/LICENSE)
+
 A VS Code extension that enables users to run configured tasks directly from the activity panel using a TreeView UI.
+
+![QuickRun Demo](https://raw.githubusercontent.com/pavelpicka/vscode-quickrun/main/resources/quickrun-demo.gif)
 
 ## Features
 
@@ -19,25 +25,25 @@ A VS Code extension that enables users to run configured tasks directly from the
 
 ## Configuration
 
-QuickRun uses a configuration file located at `.vscode/quickrun.json` in your workspace. 
+QuickRun uses a configuration file located at `.vscode/quickrun.json` in your workspace.
 
 ### Example Configuration
 
 ```json
 {
   "tasks": {
-    "serve": {"run": "npm start", "pre": []},
-    "build": {"run": "npm run build", "pre": []},
-    "deploy": {"run": "npm run deploy", "pre": ["build"]}
+    "serve": { "run": "npm start", "pre": [] },
+    "build": { "run": "npm run build", "pre": [] },
+    "deploy": { "run": "npm run deploy", "pre": ["build"] }
   },
   "groups": {
     "Frontend": {
-      "dev": {"run": "npm run dev", "pre": ["install"]},
-      "install": {"run": "npm install", "pre": []}
+      "dev": { "run": "npm run dev", "pre": ["install"] },
+      "install": { "run": "npm install", "pre": [] }
     },
     "Backend": {
-      "start": {"run": "python app.py", "pre": ["prepare", "Frontend.build"]},
-      "prepare": {"run": "pip install -r requirements.txt", "pre": []}
+      "start": { "run": "python app.py", "pre": ["prepare", "Frontend.build"] },
+      "prepare": { "run": "pip install -r requirements.txt", "pre": [] }
     }
   }
 }
@@ -73,3 +79,31 @@ You can specify task dependencies using the `pre` field in each task configurati
 ## License
 
 BSD-3 Clause License
+
+## Troubleshooting
+
+### Configuration not loading
+
+- Ensure your configuration file is correctly named `.vscode/quickrun.json`
+- Check the JSON syntax for errors
+- Try clicking the refresh button in the panel title
+
+### Tasks not running
+
+- Check if the command is valid for your operating system
+- Ensure you have the necessary dependencies installed
+- Check the VS Code terminal for any error messages
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Support
+
+If you encounter any issues or have questions, please [open an issue](https://github.com/pavelpicka/vscode-quickrun/issues).

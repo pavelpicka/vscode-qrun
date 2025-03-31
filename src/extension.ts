@@ -4,6 +4,7 @@ import { Task } from "./task";
 import { TaskRunner } from "./taskRunner";
 import { TaskTreeProvider, TaskTreeItem } from "./taskTreeProvider";
 import { NotificationManager } from "./notifications";
+import * as fs from "fs";
 
 export async function activate(context: vscode.ExtensionContext) {
   if (
@@ -106,9 +107,26 @@ export async function activate(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand("qrun.openConfig", async () => {
       const configPath = await ConfigLoader.getConfigPath();
-      if (configPath) {
+      if (!configPath) {
+        NotificationManager.showError("No workspace folder found");
+        return;
+      }
+
+      try {
+        const fileExists = await new Promise<boolean>((resolve) => {
+          fs.access(configPath, fs.constants.F_OK, (err) => {
+            resolve(!err);
+          });
+        });
+
+        if (!fileExists) {
+          await ConfigLoader.createDefaultConfig(workspaceFolder);
+        }
+
         const doc = await vscode.workspace.openTextDocument(configPath);
         await vscode.window.showTextDocument(doc);
+      } catch (error) {
+        NotificationManager.showError(`Failed to open configuration: ${error}`);
       }
     })
   );

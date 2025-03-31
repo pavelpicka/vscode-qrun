@@ -32,13 +32,17 @@ QRun uses a configuration file located at `.vscode/qrun.json` in your workspace.
 ```json
 {
   "tasks": {
-    "serve": { "run": "npm start", "pre": [] },
+    "serve": { "run": "npm start", "pre": [], "cwd": "${workspaceFolder}" },
     "build": { "run": "npm run build", "pre": [] },
     "deploy": { "run": "npm run deploy", "pre": ["build"] }
   },
   "groups": {
     "Frontend": {
-      "dev": { "run": "npm run dev", "pre": ["install"] },
+      "dev": {
+        "run": "npm run dev",
+        "pre": ["install"],
+        "cwd": "${workspaceFolder}/frontend"
+      },
       "install": { "run": "npm install", "pre": [] }
     },
     "Backend": {
@@ -56,6 +60,7 @@ QRun uses a configuration file located at `.vscode/qrun.json` in your workspace.
 - Each task has:
   - `run`: The command to execute
   - `pre`: Array of task names that should run before this task
+  - `cwd`: (optional) Working directory for the task. Supports VS Code variables like `${workspaceFolder}`
 
 ### Task Dependencies
 
@@ -63,6 +68,26 @@ You can specify task dependencies using the `pre` field in each task configurati
 
 - References to root tasks: just use the task name (e.g., `"build"`)
 - References to grouped tasks: use dot notation (e.g., `"Frontend.install"`)
+
+### Working Directory
+
+You can specify a working directory for a task using the `cwd` parameter. This is useful when you need to run commands in different directories within your workspace.
+
+The `cwd` parameter supports these VS Code variables:
+
+- `${workspaceFolder}` - The path of the workspace folder
+
+Other VS Code variables may work but aren't explicitly supported by the extension. The variable substitution is handled by VS Code's terminal API.
+
+Examples:
+
+```json
+"build": {
+  "run": "npm run build",
+  "pre": [],
+  "cwd": "${workspaceFolder}/client"
+}
+```
 
 ## Usage
 

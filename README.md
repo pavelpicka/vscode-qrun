@@ -1,71 +1,75 @@
-# quickrun README
+# QuickRun
 
-This is the README for your extension "quickrun". After writing up a brief description, we recommend including the following sections.
+A VS Code extension that enables users to run configured tasks directly from the activity panel using a TreeView UI.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- 🏃 Run tasks with a single click
+- 📊 Organize tasks in groups
+- 🔄 Set task dependencies with pre-tasks
+- 🖱️ Simple UI: one-click to run, double-click to focus terminal
+- 🛑 Stop tasks with a click
 
-For example if there is an image subfolder under your extension project workspace:
+## Getting Started
 
-\!\[feature X\]\(images/feature-x.png\)
+1. Install the extension
+2. Open a workspace/folder in VS Code
+3. Configure tasks in `.vscode/quickrun.json` (create it if it doesn't exist)
+4. Access tasks through the QuickRun activity panel
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## Configuration
 
-## Requirements
+QuickRun uses a configuration file located at `.vscode/quickrun.json` in your workspace. 
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+### Example Configuration
 
-## Extension Settings
+```json
+{
+  "tasks": {
+    "serve": {"run": "npm start", "pre": []},
+    "build": {"run": "npm run build", "pre": []},
+    "deploy": {"run": "npm run deploy", "pre": ["build"]}
+  },
+  "groups": {
+    "Frontend": {
+      "dev": {"run": "npm run dev", "pre": ["install"]},
+      "install": {"run": "npm install", "pre": []}
+    },
+    "Backend": {
+      "start": {"run": "python app.py", "pre": ["prepare", "Frontend.build"]},
+      "prepare": {"run": "pip install -r requirements.txt", "pre": []}
+    }
+  }
+}
+```
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+### Configuration Structure
 
-For example:
+- `tasks`: Root-level tasks
+- `groups`: Tasks organized into groups
+- Each task has:
+  - `run`: The command to execute
+  - `pre`: Array of task names that should run before this task
 
-This extension contributes the following settings:
+### Task Dependencies
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+You can specify task dependencies using the `pre` field in each task configuration. A task listed in `pre` will run before the main task.
 
-## Known Issues
+- References to root tasks: just use the task name (e.g., `"build"`)
+- References to grouped tasks: use dot notation (e.g., `"Frontend.install"`)
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+## Usage
 
-## Release Notes
+### Task Management
 
-Users appreciate release notes as you update your extension.
+- **Run a task**: Click the play button next to a task
+- **Stop a task**: Click the stop button next to a task
+- **Focus terminal**: Double-click on a task
+- **Stop all tasks**: Click the stop button in the panel title
+- **Close all terminals**: Click the close button in the panel title
+- **Reload configuration**: Click the refresh button in the panel title
+- **Open/create configuration**: Click the settings button in the panel title
 
-### 1.0.0
+## License
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+BSD-3 Clause License

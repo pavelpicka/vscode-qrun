@@ -1,26 +1,153 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
+import { ConfigLoader } from "./configLoader";
+import { Task } from "./task";
+import { TaskRunner } from "./taskRunner";
+import { TaskTreeProvider, TaskTreeItem } from "./taskTreeProvider";
+import { NotificationManager } from "./notifications";
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
+  if (
+    !vscode.workspace.workspaceFolders ||
+    vscode.workspace.workspaceFolders.length === 0
+  ) {
+    NotificationManager.showError(
+      "QuickRun requires a workspace folder to operate.",
+    );
+    return;
+  }
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "quickrun" is now active!');
+  const workspaceFolder = vscode.workspace.workspaceFolders[0];
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('quickrun.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from QuickRun!');
-	});
+  const treeProvider = new TaskTreeProvider();
+  const treeView = vscode.window.createTreeView("quickRunTasks", {
+    treeDataProvider: treeProvider,
+  });
 
-	context.subscriptions.push(disposable);
+  const tasks: Task[] = [];
+  const taskRunner = new TaskRunner(tasks);
+  treeProvider.setTasks(tasks);
+
+  await loadConfiguration();
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "quickrun.runTask",
+      async (item: TaskTreeItem) => {
+        if (taskRunner.isTaskRunning(item.task)) {
+          NotificationManager.showInfo(
+            `Task "${item.task.name}" is already running`,
+          );
+          return;
+        }
+        await taskRunner.runTask(item.task);
+        treeProvider.updateTaskState(item.task);
+      },
+    ),
+
+    vscode.commands.registerCommand(
+      "quickrun.stopTask",
+      async (item: TaskTreeItem) => {
+        if (!taskRunner.isTaskRunning(item.task)) {
+          NotificationManager.showInfo(
+            `Task "${item.task.name}" is not running`,
+          );
+          return;
+        }
+        taskRunner.stopTask(item.task);
+        treeProvider.updateTaskState(item.task);
+      },
+    ),
+
+    vscode.commands.registerCommand(
+      "quickrun.focusTerminal",
+      (item: TaskTreeItem) => {
+        if (!taskRunner.isTaskRunning(item.task)) {
+          NotificationManager.showInfo(
+            `Task "${item.task.name}" is not running`,
+          );
+          return;
+        }
+        taskRunner.focusTerminal(item.task);
+      },
+    ),
+
+    vscode.commands.registerCommand("quickrun.stopAllTasks", async () => {
+      if (!taskRunner.hasRunningTasks()) {
+        NotificationManager.showInfo("No tasks are running");
+        return;
+      }
+      taskRunner.stopAllTasks();
+      treeProvider.refresh();
+    }),
+
+    vscode.commands.registerCommand("quickrun.closeAllTerminals", async () => {
+      const hasRunningTasks = taskRunner.hasRunningTasks();
+      if (hasRunningTasks) {
+        const result = await NotificationManager.showWarning(
+          "There are running tasks. Do you want to stop them and close all terminals?",
+          "Yes",
+          "No",
+        );
+
+        if (result === "Yes") {
+          taskRunner.stopAllTasks();
+          taskRunner.closeAllTerminals();
+          treeProvider.refresh();
+        }
+      } else {
+        taskRunner.closeAllTerminals();
+      }
+    }),
+
+    vscode.commands.registerCommand("quickrun.reloadConfig", async () => {
+      await loadConfiguration();
+      NotificationManager.showInfo("QuickRun configuration reloaded");
+    }),
+
+    vscode.commands.registerCommand("quickrun.openConfig", async () => {
+      const configPath = await ConfigLoader.getConfigPath();
+      if (configPath) {
+        const doc = await vscode.workspace.openTextDocument(configPath);
+        await vscode.window.showTextDocument(doc);
+      }
+    }),
+  );
+
+  context.subscriptions.push(treeView);
+
+  async function loadConfiguration() {
+    try {
+      const loadedTasks = await ConfigLoader.loadConfig();
+
+      if (!loadedTasks || loadedTasks.length === 0) {
+        const createConfig = "Create Configuration";
+        const response = await NotificationManager.showWarning(
+          "No QuickRun configuration found in this workspace.",
+          createConfig,
+        );
+
+        if (response === createConfig) {
+          await ConfigLoader.createDefaultConfig(workspaceFolder);
+          const newTasks = await ConfigLoader.loadConfig();
+          if (newTasks && newTasks.length > 0) {
+            tasks.length = 0;
+            tasks.push(...newTasks);
+            treeProvider.setTasks(tasks);
+            taskRunner.setTasks(tasks);
+          }
+        }
+      } else {
+        tasks.length = 0;
+        tasks.push(...loadedTasks);
+        treeProvider.setTasks(tasks);
+        taskRunner.setTasks(tasks);
+      }
+    } catch (error) {
+      NotificationManager.showError(
+        `Failed to load QuickRun configuration: ${error}`,
+      );
+    }
+  }
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}

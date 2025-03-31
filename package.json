@@ -1,41 +1,159 @@
 {
   "name": "quickrun",
   "displayName": "QuickRun",
-  "description": "",
+  "description": "Quickly run and manage tasks from VS Code",
   "version": "0.0.1",
+  "publisher": "pavelpicka",
+  "author": {
+    "name": "Pavel Picka"
+  },
+  "license": "BSD-3-Clause",
   "engines": {
-    "vscode": "^1.98.0"
+    "vscode": "^1.85.0"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./out/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "QuickRun",
+      "properties": {
+        "quickrun.notifications.showInfo": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show informational messages (task status, config changes, etc.)"
+        },
+        "quickrun.notifications.showErrors": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show error messages"
+        }
+      }
+    },
     "commands": [
       {
-        "command": "quickrun.helloWorld",
-        "title": "Hello World"
+        "command": "quickrun.runTask",
+        "title": "QuickRun: Run Task",
+        "icon": "$(debug-start)"
+      },
+      {
+        "command": "quickrun.stopTask",
+        "title": "QuickRun: Stop Task",
+        "icon": "$(debug-stop)"
+      },
+      {
+        "command": "quickrun.focusTerminal",
+        "title": "QuickRun: Focus Terminal",
+        "icon": "$(terminal)"
+      },
+      {
+        "command": "quickrun.stopAllTasks",
+        "title": "QuickRun: Stop All Tasks",
+        "icon": "$(debug-stop)"
+      },
+      {
+        "command": "quickrun.closeAllTerminals",
+        "title": "QuickRun: Close All Terminals",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "quickrun.reloadConfig",
+        "title": "QuickRun: Reload Configuration",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "quickrun.openConfig",
+        "title": "QuickRun: Open Configuration",
+        "icon": "$(settings-gear)"
       }
-    ]
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "quickrun.openConfig",
+          "when": "view == quickRunTasks",
+          "group": "navigation@1",
+          "icon": "$(settings-gear)"
+        },
+        {
+          "command": "quickrun.reloadConfig",
+          "when": "view == quickRunTasks",
+          "group": "navigation@2",
+          "icon": "$(refresh)"
+        },
+        {
+          "command": "quickrun.closeAllTerminals",
+          "when": "view == quickRunTasks",
+          "group": "navigation@3",
+          "icon": "$(trash)"
+        },
+        {
+          "command": "quickrun.stopAllTasks",
+          "when": "view == quickRunTasks",
+          "group": "navigation@4",
+          "icon": "$(debug-stop)"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "quickrun.runTask",
+          "when": "view == quickRunTasks && viewItem =~ /task/",
+          "group": "inline"
+        },
+        {
+          "command": "quickrun.stopTask",
+          "when": "view == quickRunTasks && viewItem =~ /task/",
+          "group": "inline"
+        },
+        {
+          "command": "quickrun.focusTerminal",
+          "when": "view == quickRunTasks && viewItem =~ /task/",
+          "group": "inline"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "quickrun-explorer",
+          "title": "QuickRun",
+          "icon": "$(play)"
+        }
+      ]
+    },
+    "views": {
+      "quickrun-explorer": [
+        {
+          "id": "quickRunTasks",
+          "name": "QuickRun"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src",
-    "test": "vscode-test"
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "format": "prettier --write \"src/**/*.ts\""
   },
   "devDependencies": {
-    "@types/vscode": "^1.98.0",
-    "@types/mocha": "^10.0.10",
+    "@types/vscode": "^1.85.0",
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^10.0.6",
     "@types/node": "20.x",
-    "@typescript-eslint/eslint-plugin": "^8.28.0",
-    "@typescript-eslint/parser": "^8.28.0",
-    "eslint": "^9.23.0",
-    "typescript": "^5.8.2",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "glob": "^7.2.3",
+    "mocha": "^10.2.0",
+    "prettier": "^3.1.0",
+    "typescript": "^5.3.3"
   }
 }

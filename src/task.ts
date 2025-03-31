@@ -4,7 +4,7 @@ export interface TaskConfig {
   cwd?: string;
 }
 
-export interface QuickRunConfig {
+export interface QRunConfig {
   tasks?: { [key: string]: TaskConfig };
   groups?: { [key: string]: { [key: string]: TaskConfig } };
 }
@@ -21,7 +21,7 @@ export class Task {
     command: string,
     preTasks: string[] = [],
     groupName?: string,
-    cwd?: string,
+    cwd?: string
   ) {
     this.name = name;
     this.command = command;

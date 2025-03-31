@@ -31,7 +31,7 @@ export class TaskRunner {
     if (taskName.includes(".")) {
       const [groupName, name] = taskName.split(".");
       task = this.tasks.find(
-        (t) => t.groupName === groupName && t.name === name,
+        (t) => t.groupName === groupName && t.name === name
       );
       if (task) {
         return task;
@@ -55,7 +55,7 @@ export class TaskRunner {
             await new Promise((resolve) => setTimeout(resolve, 500));
           } else {
             NotificationManager.showError(
-              `Pre-task "${preTaskName}" not found`,
+              `Pre-task "${preTaskName}" not found`
             );
           }
         }
@@ -66,7 +66,7 @@ export class TaskRunner {
       NotificationManager.showInfo(`Task "${task.fullName}" started`);
     } catch (error) {
       NotificationManager.showError(
-        `Failed to run task "${task.fullName}": ${error}`,
+        `Failed to run task "${task.fullName}": ${error}`
       );
     }
   }
@@ -109,7 +109,7 @@ export class TaskRunner {
   }
 
   private getOrCreateTerminal(task: Task): vscode.Terminal {
-    const terminalName = `QuickRun: ${task.fullName}`;
+    const terminalName = `QRun: ${task.fullName}`;
 
     const existingTask = this.runningTasks.get(task.fullName);
     if (existingTask) {
@@ -117,7 +117,7 @@ export class TaskRunner {
     }
 
     const existingTerminal = vscode.window.terminals.find(
-      (t) => t.name === terminalName,
+      (t) => t.name === terminalName
     );
     if (existingTerminal) {
       return existingTerminal;

@@ -1,12 +1,12 @@
-# QuickRun
+# QRun
 
-[![Version](https://img.shields.io/visual-studio-marketplace/v/pavelpicka.quickrun)](https://marketplace.visualstudio.com/items?itemName=pavelpicka.quickrun)
-[![Downloads](https://img.shields.io/visual-studio-marketplace/d/pavelpicka.quickrun)](https://marketplace.visualstudio.com/items?itemName=pavelpicka.quickrun)
-[![License](https://img.shields.io/github/license/pavelpicka/vscode-quickrun)](https://github.com/pavelpicka/vscode-quickrun/blob/main/LICENSE)
+[![Version](https://img.shields.io/visual-studio-marketplace/v/pavelpicka.qrun)](https://marketplace.visualstudio.com/items?itemName=pavelpicka.qrun)
+[![Downloads](https://img.shields.io/visual-studio-marketplace/d/pavelpicka.qrun)](https://marketplace.visualstudio.com/items?itemName=pavelpicka.qrun)
+[![License](https://img.shields.io/github/license/pavelpicka/vscode-qrun)](https://github.com/pavelpicka/vscode-qrun/blob/main/LICENSE)
 
 A VS Code extension that enables users to run configured tasks directly from the activity panel using a TreeView UI.
 
-![QuickRun Demo](https://raw.githubusercontent.com/pavelpicka/vscode-quickrun/main/resources/quickrun-demo.gif)
+![QRun Demo](https://raw.githubusercontent.com/pavelpicka/vscode-qrun/main/resources/qrun-demo.gif)
 
 ## Features
 
@@ -20,12 +20,12 @@ A VS Code extension that enables users to run configured tasks directly from the
 
 1. Install the extension
 2. Open a workspace/folder in VS Code
-3. Configure tasks in `.vscode/quickrun.json` (create it if it doesn't exist)
-4. Access tasks through the QuickRun activity panel
+3. Configure tasks in `.vscode/qrun.json` (create it if it doesn't exist)
+4. Access tasks through the QRun activity panel
 
 ## Configuration
 
-QuickRun uses a configuration file located at `.vscode/quickrun.json` in your workspace.
+QRun uses a configuration file located at `.vscode/qrun.json` in your workspace.
 
 ### Example Configuration
 
@@ -84,7 +84,7 @@ BSD-3 Clause License
 
 ### Configuration not loading
 
-- Ensure your configuration file is correctly named `.vscode/quickrun.json`
+- Ensure your configuration file is correctly named `.vscode/qrun.json`
 - Check the JSON syntax for errors
 - Try clicking the refresh button in the panel title
 
@@ -106,4 +106,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Support
 
-If you encounter any issues or have questions, please [open an issue](https://github.com/pavelpicka/vscode-quickrun/issues).
+If you encounter any issues or have questions, please [open an issue](https://github.com/pavelpicka/vscode-qrun/issues).

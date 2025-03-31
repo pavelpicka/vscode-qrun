@@ -1,6 +1,6 @@
 {
-  "name": "quickrun",
-  "displayName": "QuickRun",
+  "name": "qrun",
+  "displayName": "QRun",
   "description": "Quickly run and manage tasks from VS Code",
   "version": "0.1.0",
   "publisher": "pavelpicka",
@@ -8,14 +8,14 @@
     "name": "Pavel Picka"
   },
   "license": "BSD-3-Clause",
-  "icon": "resources/quickrun-icon.png",
+  "icon": "resources/qrun-icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pavelpicka/vscode-quickrun"
+    "url": "https://github.com/pavelpicka/vscode-qrun"
   },
-  "homepage": "https://github.com/pavelpicka/vscode-quickrun",
+  "homepage": "https://github.com/pavelpicka/vscode-qrun",
   "bugs": {
-    "url": "https://github.com/pavelpicka/vscode-quickrun/issues"
+    "url": "https://github.com/pavelpicka/vscode-qrun/issues"
   },
   "keywords": [
     "task",
@@ -37,14 +37,14 @@
   "main": "./out/extension.js",
   "contributes": {
     "configuration": {
-      "title": "QuickRun",
+      "title": "QRun",
       "properties": {
-        "quickrun.notifications.showInfo": {
+        "qrun.notifications.showInfo": {
           "type": "boolean",
           "default": false,
           "description": "Show informational messages (task status, config changes, etc.)"
         },
-        "quickrun.notifications.showErrors": {
+        "qrun.notifications.showErrors": {
           "type": "boolean",
           "default": true,
           "description": "Show error messages"
@@ -53,82 +53,82 @@
     },
     "commands": [
       {
-        "command": "quickrun.runTask",
-        "title": "QuickRun: Run Task",
+        "command": "qrun.runTask",
+        "title": "QRun: Run Task",
         "icon": "$(debug-start)"
       },
       {
-        "command": "quickrun.stopTask",
-        "title": "QuickRun: Stop Task",
+        "command": "qrun.stopTask",
+        "title": "QRun: Stop Task",
         "icon": "$(debug-stop)"
       },
       {
-        "command": "quickrun.focusTerminal",
-        "title": "QuickRun: Focus Terminal",
+        "command": "qrun.focusTerminal",
+        "title": "QRun: Focus Terminal",
         "icon": "$(terminal)"
       },
       {
-        "command": "quickrun.stopAllTasks",
-        "title": "QuickRun: Stop All Tasks",
+        "command": "qrun.stopAllTasks",
+        "title": "QRun: Stop All Tasks",
         "icon": "$(debug-stop)"
       },
       {
-        "command": "quickrun.closeAllTerminals",
-        "title": "QuickRun: Close All Terminals",
+        "command": "qrun.closeAllTerminals",
+        "title": "QRun: Close All Terminals",
         "icon": "$(trash)"
       },
       {
-        "command": "quickrun.reloadConfig",
-        "title": "QuickRun: Reload Configuration",
+        "command": "qrun.reloadConfig",
+        "title": "QRun: Reload Configuration",
         "icon": "$(refresh)"
       },
       {
-        "command": "quickrun.openConfig",
-        "title": "QuickRun: Open Configuration",
+        "command": "qrun.openConfig",
+        "title": "QRun: Open Configuration",
         "icon": "$(settings-gear)"
       }
     ],
     "menus": {
       "view/title": [
         {
-          "command": "quickrun.openConfig",
-          "when": "view == quickRunTasks",
+          "command": "qrun.openConfig",
+          "when": "view == qrunTasks",
           "group": "navigation@1",
           "icon": "$(settings-gear)"
         },
         {
-          "command": "quickrun.reloadConfig",
-          "when": "view == quickRunTasks",
+          "command": "qrun.reloadConfig",
+          "when": "view == qrunTasks",
           "group": "navigation@2",
           "icon": "$(refresh)"
         },
         {
-          "command": "quickrun.closeAllTerminals",
-          "when": "view == quickRunTasks",
+          "command": "qrun.closeAllTerminals",
+          "when": "view == qrunTasks",
           "group": "navigation@3",
           "icon": "$(trash)"
         },
         {
-          "command": "quickrun.stopAllTasks",
-          "when": "view == quickRunTasks",
+          "command": "qrun.stopAllTasks",
+          "when": "view == qrunTasks",
           "group": "navigation@4",
           "icon": "$(debug-stop)"
         }
       ],
       "view/item/context": [
         {
-          "command": "quickrun.runTask",
-          "when": "view == quickRunTasks && viewItem =~ /task/",
+          "command": "qrun.runTask",
+          "when": "view == qrunTasks && viewItem =~ /task/",
           "group": "inline"
         },
         {
-          "command": "quickrun.stopTask",
-          "when": "view == quickRunTasks && viewItem =~ /task/",
+          "command": "qrun.stopTask",
+          "when": "view == qrunTasks && viewItem =~ /task/",
           "group": "inline"
         },
         {
-          "command": "quickrun.focusTerminal",
-          "when": "view == quickRunTasks && viewItem =~ /task/",
+          "command": "qrun.focusTerminal",
+          "when": "view == qrunTasks && viewItem =~ /task/",
           "group": "inline"
         }
       ]
@@ -136,17 +136,17 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "quickrun-explorer",
-          "title": "QuickRun",
-          "icon": "resources/quickrun-icon.png"
+          "id": "qrun-explorer",
+          "title": "QRun",
+          "icon": "$(debug-start)"
         }
       ]
     },
     "views": {
-      "quickrun-explorer": [
+      "qrun-explorer": [
         {
-          "id": "quickRunTasks",
-          "name": "QuickRun"
+          "id": "qrunTasks",
+          "name": "QRun"
         }
       ]
     }

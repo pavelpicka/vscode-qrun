@@ -1,6 +1,6 @@
 # Change Log
 
-All notable changes to the "QuickRun" extension will be documented in this file.
+All notable changes to the "QRun" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
@@ -14,4 +14,4 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Task dependencies with pre-tasks
 - UI for managing tasks
 - Commands for running, stopping, and focusing tasks
-- Configuration via `.vscode/quickrun.json`
+- Configuration via `.vscode/qrun.json`

@@ -11,7 +11,7 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.workspace.workspaceFolders.length === 0
   ) {
     NotificationManager.showError(
-      "QuickRun requires a workspace folder to operate.",
+      "QRun requires a workspace folder to operate."
     );
     return;
   }
@@ -19,7 +19,7 @@ export async function activate(context: vscode.ExtensionContext) {
   const workspaceFolder = vscode.workspace.workspaceFolders[0];
 
   const treeProvider = new TaskTreeProvider();
-  const treeView = vscode.window.createTreeView("quickRunTasks", {
+  const treeView = vscode.window.createTreeView("qrunTasks", {
     treeDataProvider: treeProvider,
   });
 
@@ -31,47 +31,47 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      "quickrun.runTask",
+      "qrun.runTask",
       async (item: TaskTreeItem) => {
         if (taskRunner.isTaskRunning(item.task)) {
           NotificationManager.showInfo(
-            `Task "${item.task.name}" is already running`,
+            `Task "${item.task.name}" is already running`
           );
           return;
         }
         await taskRunner.runTask(item.task);
         treeProvider.updateTaskState(item.task);
-      },
+      }
     ),
 
     vscode.commands.registerCommand(
-      "quickrun.stopTask",
+      "qrun.stopTask",
       async (item: TaskTreeItem) => {
         if (!taskRunner.isTaskRunning(item.task)) {
           NotificationManager.showInfo(
-            `Task "${item.task.name}" is not running`,
+            `Task "${item.task.name}" is not running`
           );
           return;
         }
         taskRunner.stopTask(item.task);
         treeProvider.updateTaskState(item.task);
-      },
+      }
     ),
 
     vscode.commands.registerCommand(
-      "quickrun.focusTerminal",
+      "qrun.focusTerminal",
       (item: TaskTreeItem) => {
         if (!taskRunner.isTaskRunning(item.task)) {
           NotificationManager.showInfo(
-            `Task "${item.task.name}" is not running`,
+            `Task "${item.task.name}" is not running`
           );
           return;
         }
         taskRunner.focusTerminal(item.task);
-      },
+      }
     ),
 
-    vscode.commands.registerCommand("quickrun.stopAllTasks", async () => {
+    vscode.commands.registerCommand("qrun.stopAllTasks", async () => {
       if (!taskRunner.hasRunningTasks()) {
         NotificationManager.showInfo("No tasks are running");
         return;
@@ -80,13 +80,13 @@ export async function activate(context: vscode.ExtensionContext) {
       treeProvider.refresh();
     }),
 
-    vscode.commands.registerCommand("quickrun.closeAllTerminals", async () => {
+    vscode.commands.registerCommand("qrun.closeAllTerminals", async () => {
       const hasRunningTasks = taskRunner.hasRunningTasks();
       if (hasRunningTasks) {
         const result = await NotificationManager.showWarning(
           "There are running tasks. Do you want to stop them and close all terminals?",
           "Yes",
-          "No",
+          "No"
         );
 
         if (result === "Yes") {
@@ -99,18 +99,18 @@ export async function activate(context: vscode.ExtensionContext) {
       }
     }),
 
-    vscode.commands.registerCommand("quickrun.reloadConfig", async () => {
+    vscode.commands.registerCommand("qrun.reloadConfig", async () => {
       await loadConfiguration();
-      NotificationManager.showInfo("QuickRun configuration reloaded");
+      NotificationManager.showInfo("QRun configuration reloaded");
     }),
 
-    vscode.commands.registerCommand("quickrun.openConfig", async () => {
+    vscode.commands.registerCommand("qrun.openConfig", async () => {
       const configPath = await ConfigLoader.getConfigPath();
       if (configPath) {
         const doc = await vscode.workspace.openTextDocument(configPath);
         await vscode.window.showTextDocument(doc);
       }
-    }),
+    })
   );
 
   context.subscriptions.push(treeView);
@@ -122,8 +122,8 @@ export async function activate(context: vscode.ExtensionContext) {
       if (!loadedTasks || loadedTasks.length === 0) {
         const createConfig = "Create Configuration";
         const response = await NotificationManager.showWarning(
-          "No QuickRun configuration found in this workspace.",
-          createConfig,
+          "No QRun configuration found in this workspace.",
+          createConfig
         );
 
         if (response === createConfig) {
@@ -144,7 +144,7 @@ export async function activate(context: vscode.ExtensionContext) {
       }
     } catch (error) {
       NotificationManager.showError(
-        `Failed to load QuickRun configuration: ${error}`,
+        `Failed to load QRun configuration: ${error}`
       );
     }
   }

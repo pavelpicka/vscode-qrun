@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 export class NotificationManager {
   private static getConfig(setting: string): boolean {
     return vscode.workspace
-      .getConfiguration("quickrun.notifications")
+      .getConfiguration("qrun.notifications")
       .get(setting, false);
   }
 

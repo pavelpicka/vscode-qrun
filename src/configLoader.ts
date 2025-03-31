@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
-import { Task, QuickRunConfig, TaskConfig } from "./task";
+import { Task, QRunConfig, TaskConfig } from "./task";
 
 export class ConfigLoader {
-  private static readonly CONFIG_FILENAME = "quickrun.json";
+  private static readonly CONFIG_FILENAME = "qrun.json";
   private static readonly CONFIG_FOLDER = ".vscode";
 
   public static async getConfigPath(): Promise<string | undefined> {
@@ -31,12 +31,12 @@ export class ConfigLoader {
     }
 
     const configContent = fs.readFileSync(configPath, "utf8");
-    const config = JSON.parse(configContent) as QuickRunConfig;
+    const config = JSON.parse(configContent) as QRunConfig;
 
     return this.parseConfig(config);
   }
 
-  public static parseConfig(config: QuickRunConfig): Task[] {
+  public static parseConfig(config: QRunConfig): Task[] {
     const tasks: Task[] = [];
 
     if (config.tasks) {
@@ -102,7 +102,7 @@ export class ConfigLoader {
     }
 
     if (!fs.existsSync(configPath)) {
-      const defaultConfig: QuickRunConfig = {
+      const defaultConfig: QRunConfig = {
         tasks: {
           serve: { run: "npm start", pre: [], cwd: "${workspaceFolder}" },
           build: { run: "npm run build", pre: [] },

@@ -4,6 +4,19 @@ All notable changes to the "QRun" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.2.0] - 2024-04-01
+
+### Added
+
+- Terminal icon for task items in the tree view
+- "Oneshot" option for tasks that can be run multiple times
+- Confirmation dialog for "Stop All Tasks" button
+
+### Changed
+
+- Task selection now focuses the terminal if the task is running
+- Improved user experience by showing info messages instead of errors for missing configuration
+
 ## [0.1.0] - 2024-03-31
 
 ### Added

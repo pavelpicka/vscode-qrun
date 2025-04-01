@@ -63,11 +63,6 @@
         "icon": "$(debug-stop)"
       },
       {
-        "command": "qrun.focusTerminal",
-        "title": "QRun: Focus Terminal",
-        "icon": "$(terminal)"
-      },
-      {
         "command": "qrun.stopAllTasks",
         "title": "QRun: Stop All Tasks",
         "icon": "$(debug-stop)"
@@ -123,11 +118,6 @@
         },
         {
           "command": "qrun.stopTask",
-          "when": "view == qrunTasks && viewItem =~ /task/",
-          "group": "inline"
-        },
-        {
-          "command": "qrun.focusTerminal",
           "when": "view == qrunTasks && viewItem =~ /task/",
           "group": "inline"
         }

@@ -22,6 +22,16 @@ export async function activate(context: vscode.ExtensionContext) {
   const treeProvider = new TaskTreeProvider();
   const treeView = vscode.window.createTreeView("qrunTasks", {
     treeDataProvider: treeProvider,
+    canSelectMany: false,
+  });
+
+  treeView.onDidChangeSelection((e) => {
+    if (e.selection.length === 1 && e.selection[0] instanceof TaskTreeItem) {
+      const item = e.selection[0] as TaskTreeItem;
+      if (taskRunner.isTaskRunning(item.task)) {
+        taskRunner.focusTerminal(item.task);
+      }
+    }
   });
 
   const tasks: Task[] = [];
@@ -56,19 +66,6 @@ export async function activate(context: vscode.ExtensionContext) {
         }
         taskRunner.stopTask(item.task);
         treeProvider.updateTaskState(item.task);
-      }
-    ),
-
-    vscode.commands.registerCommand(
-      "qrun.focusTerminal",
-      (item: TaskTreeItem) => {
-        if (!taskRunner.isTaskRunning(item.task)) {
-          NotificationManager.showInfo(
-            `Task "${item.task.name}" is not running`
-          );
-          return;
-        }
-        taskRunner.focusTerminal(item.task);
       }
     ),
 
@@ -161,7 +158,10 @@ export async function activate(context: vscode.ExtensionContext) {
         taskRunner.setTasks(tasks);
       }
     } catch (error) {
-      if (error instanceof Error && error.message.includes("Configuration file not found")) {
+      if (
+        error instanceof Error &&
+        error.message.includes("Configuration file not found")
+      ) {
         NotificationManager.showInfo(
           `No QRun configuration found at ${await ConfigLoader.getConfigPath()}. Use the settings icon to create one.`
         );

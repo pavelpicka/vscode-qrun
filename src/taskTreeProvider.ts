@@ -4,19 +4,20 @@ import { Task } from "./task";
 export class TaskTreeItem extends vscode.TreeItem {
   constructor(
     public readonly task: Task,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+    public readonly collapsibleState: vscode.TreeItemCollapsibleState
   ) {
     super(task.name, collapsibleState);
     this.tooltip = task.description;
     this.contextValue = "task";
     this.command = undefined;
+    this.iconPath = new vscode.ThemeIcon("terminal");
   }
 }
 
 export class GroupTreeItem extends vscode.TreeItem {
   constructor(
     public readonly groupName: string,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+    public readonly collapsibleState: vscode.TreeItemCollapsibleState
   ) {
     super(groupName, collapsibleState);
     this.contextValue = "group";
@@ -52,7 +53,7 @@ export class TaskTreeProvider
   }
 
   getChildren(
-    element?: TaskTreeItem | GroupTreeItem,
+    element?: TaskTreeItem | GroupTreeItem
   ): Thenable<(TaskTreeItem | GroupTreeItem)[]> {
     if (!this.tasks || this.tasks.length === 0) {
       return Promise.resolve([]);
@@ -77,16 +78,13 @@ export class TaskTreeProvider
 
       for (const task of ungroupedTasks) {
         items.push(
-          new TaskTreeItem(task, vscode.TreeItemCollapsibleState.None),
+          new TaskTreeItem(task, vscode.TreeItemCollapsibleState.None)
         );
       }
 
       for (const [groupName, groupTasks] of groups) {
         items.push(
-          new GroupTreeItem(
-            groupName,
-            vscode.TreeItemCollapsibleState.Expanded,
-          ),
+          new GroupTreeItem(groupName, vscode.TreeItemCollapsibleState.Expanded)
         );
       }
 
@@ -95,13 +93,12 @@ export class TaskTreeProvider
 
     if (element instanceof GroupTreeItem) {
       const groupTasks = this.tasks.filter(
-        (task) => task.groupName === element.groupName,
+        (task) => task.groupName === element.groupName
       );
       return Promise.resolve(
         groupTasks.map(
-          (task) =>
-            new TaskTreeItem(task, vscode.TreeItemCollapsibleState.None),
-        ),
+          (task) => new TaskTreeItem(task, vscode.TreeItemCollapsibleState.None)
+        )
       );
     }
 

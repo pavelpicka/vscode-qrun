@@ -13,7 +13,7 @@ A VS Code extension that enables users to run configured tasks directly from the
 - 🏃 Run tasks with a single click
 - 📊 Organize tasks in groups
 - 🔄 Set task dependencies with pre-tasks
-- 🖱️ Simple UI: one-click to run, double-click to focus terminal
+- 🖱️ Simple UI: select a task to focus its terminal
 - 🛑 Stop tasks with a click
 
 ## Getting Started
@@ -95,7 +95,7 @@ Examples:
 
 - **Run a task**: Click the play button next to a task
 - **Stop a task**: Click the stop button next to a task
-- **Focus terminal**: Double-click on a task
+- **Focus terminal**: Select a task to focus its terminal if task is running
 - **Stop all tasks**: Click the stop button in the panel title
 - **Close all terminals**: Click the close button in the panel title
 - **Reload configuration**: Click the refresh button in the panel title

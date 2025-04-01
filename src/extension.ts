@@ -11,7 +11,7 @@ export async function activate(context: vscode.ExtensionContext) {
     !vscode.workspace.workspaceFolders ||
     vscode.workspace.workspaceFolders.length === 0
   ) {
-    NotificationManager.showError(
+    NotificationManager.showInfo(
       "QRun requires a workspace folder to operate."
     );
     return;

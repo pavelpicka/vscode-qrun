@@ -2,7 +2,7 @@
   "name": "qrun",
   "displayName": "QRun",
   "description": "Quickly run and manage tasks from VS Code",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "publisher": "pavelpicka",
   "author": {
     "name": "Pavel Picka"
@@ -56,6 +56,11 @@
         "command": "qrun.runTask",
         "title": "QRun: Run Task",
         "icon": "$(debug-start)"
+      },
+      {
+        "command": "qrun.reloadTask",
+        "title": "QRun: Reload Task",
+        "icon": "$(refresh)"
       },
       {
         "command": "qrun.stopTask",
@@ -114,12 +119,17 @@
         {
           "command": "qrun.runTask",
           "when": "view == qrunTasks && viewItem =~ /task/",
-          "group": "inline"
+          "group": "inline@1"
+        },
+        {
+          "command": "qrun.reloadTask",
+          "when": "view == qrunTasks && viewItem =~ /task/",
+          "group": "inline@2"
         },
         {
           "command": "qrun.stopTask",
           "when": "view == qrunTasks && viewItem =~ /task/",
-          "group": "inline"
+          "group": "inline@3"
         }
       ]
     },

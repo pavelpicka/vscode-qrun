@@ -122,6 +122,7 @@ This is particularly useful for development workflows where you frequently run t
 ### Task Management
 
 - **Run a task**: Click the play button next to a task
+- **Reload a task**: Click the refresh button next to a task to stop and restart it
 - **Stop a task**: Click the stop button next to a task
 - **Focus terminal**: Select a task to focus its terminal (if task is running)
 - **Stop all tasks**: Click the stop button in the panel title (requires confirmation)

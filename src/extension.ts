@@ -50,6 +50,25 @@ export async function activate(context: vscode.ExtensionContext) {
     ),
 
     vscode.commands.registerCommand(
+      "qrun.reloadTask",
+      async (item: TaskTreeItem) => {
+        if (taskRunner.isTaskRunning(item.task)) {
+          taskRunner.stopTask(item.task);
+
+          await new Promise((resolve) => setTimeout(resolve, 300));
+
+          await taskRunner.runTask(item.task);
+          NotificationManager.showInfo(`Task "${item.task.name}" reloaded`);
+        } else {
+          await taskRunner.runTask(item.task);
+          NotificationManager.showInfo(`Task "${item.task.name}" started`);
+        }
+
+        treeProvider.updateTaskState(item.task);
+      }
+    ),
+
+    vscode.commands.registerCommand(
       "qrun.stopTask",
       async (item: TaskTreeItem) => {
         if (!taskRunner.isTaskRunning(item.task)) {

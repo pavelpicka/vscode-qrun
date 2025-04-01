@@ -4,6 +4,18 @@ All notable changes to the "QRun" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.2.2] - 2024-04-01
+
+### Added
+
+- Reload button for tasks to quickly stop and restart a task
+
+## [0.2.1] - 2024-04-01
+
+### Changed
+
+- Improved logging messages for better user experience
+
 ## [0.2.0] - 2024-04-01
 
 ### Added

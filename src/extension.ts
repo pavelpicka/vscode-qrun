@@ -161,9 +161,15 @@ export async function activate(context: vscode.ExtensionContext) {
         taskRunner.setTasks(tasks);
       }
     } catch (error) {
-      NotificationManager.showError(
-        `Failed to load QRun configuration: ${error}`
-      );
+      if (error instanceof Error && error.message.includes("Configuration file not found")) {
+        NotificationManager.showInfo(
+          `No QRun configuration found at ${await ConfigLoader.getConfigPath()}. Use the settings icon to create one.`
+        );
+      } else {
+        NotificationManager.showError(
+          `Failed to load QRun configuration: ${error}`
+        );
+      }
     }
   }
 }

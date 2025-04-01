@@ -33,7 +33,11 @@ QRun uses a configuration file located at `.vscode/qrun.json` in your workspace.
 {
   "tasks": {
     "serve": { "run": "npm start", "pre": [], "cwd": "${workspaceFolder}" },
-    "build": { "run": "npm run build", "pre": [] },
+    "build": {
+      "run": "npm run build",
+      "pre": [],
+      "cwd": "${workspaceFolder}/client"
+    },
     "deploy": { "run": "npm run deploy", "pre": ["build"] }
   },
   "groups": {
@@ -59,8 +63,9 @@ QRun uses a configuration file located at `.vscode/qrun.json` in your workspace.
 - `groups`: Tasks organized into groups
 - Each task has:
   - `run`: The command to execute
-  - `pre`: Array of task names that should run before this task
+  - `pre`: (optional) Array of task names that should run before this task
   - `cwd`: (optional) Working directory for the task. Supports VS Code variables like `${workspaceFolder}`
+  - `oneshot`: (optional) Boolean flag that allows running the task multiple times without stopping. Useful for tasks like tests or linting. Default is `false`.
 
 ### Task Dependencies
 
@@ -89,15 +94,38 @@ Examples:
 }
 ```
 
+### Oneshot Tasks
+
+Oneshot tasks are useful for commands that complete quickly and don't need to be manually managed, such as tests, linting, or other checks. When you run an oneshot task:
+
+- If the task is already running, the previous run will be automatically stopped
+- The task will reuse the same terminal instead of creating a new one each time
+- You can run the task again without manually stopping it first
+
+```json
+"lint": {
+  "run": "npm run lint",
+  "pre": [],
+  "oneshot": true
+},
+"test": {
+  "run": "npm test",
+  "pre": [],
+  "oneshot": true
+}
+```
+
+This is particularly useful for development workflows where you frequently run the same command during development.
+
 ## Usage
 
 ### Task Management
 
 - **Run a task**: Click the play button next to a task
 - **Stop a task**: Click the stop button next to a task
-- **Focus terminal**: Select a task to focus its terminal if task is running
-- **Stop all tasks**: Click the stop button in the panel title
-- **Close all terminals**: Click the close button in the panel title
+- **Focus terminal**: Select a task to focus its terminal (if task is running)
+- **Stop all tasks**: Click the stop button in the panel title (requires confirmation)
+- **Close all terminals**: Click the close button in the panel title (requires confirmation)
 - **Reload configuration**: Click the refresh button in the panel title
 - **Open/create configuration**: Click the settings button in the panel title
 

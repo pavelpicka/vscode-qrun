@@ -44,12 +44,6 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand(
       "qrun.runTask",
       async (item: TaskTreeItem) => {
-        if (taskRunner.isTaskRunning(item.task)) {
-          NotificationManager.showInfo(
-            `Task "${item.task.name}" is already running`
-          );
-          return;
-        }
         await taskRunner.runTask(item.task);
         treeProvider.updateTaskState(item.task);
       }
@@ -74,8 +68,17 @@ export async function activate(context: vscode.ExtensionContext) {
         NotificationManager.showInfo("No tasks are running");
         return;
       }
-      taskRunner.stopAllTasks();
-      treeProvider.refresh();
+
+      const result = await NotificationManager.showWarning(
+        "Are you sure you want to stop all running tasks?",
+        "Yes",
+        "No"
+      );
+
+      if (result === "Yes") {
+        taskRunner.stopAllTasks();
+        treeProvider.refresh();
+      }
     }),
 
     vscode.commands.registerCommand("qrun.closeAllTerminals", async () => {

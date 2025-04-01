@@ -48,7 +48,8 @@ export class ConfigLoader {
               taskConfig.run,
               taskConfig.pre || [],
               undefined,
-              taskConfig.cwd
+              taskConfig.cwd,
+              taskConfig.oneshot || false
             )
           );
         }
@@ -66,7 +67,8 @@ export class ConfigLoader {
                   taskConfig.run,
                   taskConfig.pre || [],
                   groupName,
-                  taskConfig.cwd
+                  taskConfig.cwd,
+                  taskConfig.oneshot || false
                 )
               );
             }
@@ -106,6 +108,7 @@ export class ConfigLoader {
         tasks: {
           serve: { run: "npm start", pre: [], cwd: "${workspaceFolder}" },
           build: { run: "npm run build", pre: [] },
+          lint: { run: "npm run lint", pre: [], oneshot: true },
         },
         groups: {
           Frontend: {
@@ -115,6 +118,7 @@ export class ConfigLoader {
               cwd: "${workspaceFolder}/frontend",
             },
             install: { run: "npm install", pre: [] },
+            test: { run: "npm test", pre: [], oneshot: true },
           },
         },
       };

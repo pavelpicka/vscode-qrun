@@ -43,6 +43,17 @@ export class TaskRunner {
 
   async runTask(task: Task) {
     try {
+      if (!task.oneshot && this.isTaskRunning(task)) {
+        NotificationManager.showInfo(
+          `Task "${task.fullName}" is already running. Stop it first or configure as 'oneshot: true' to run multiple instances.`
+        );
+        return;
+      }
+
+      if (task.oneshot) {
+        this.stopOneshotTask(task);
+      }
+
       const terminal = this.getOrCreateTerminal(task);
       terminal.show();
 
@@ -77,6 +88,15 @@ export class TaskRunner {
       runningTask.terminal.sendText("\u0003");
       this.runningTasks.delete(task.fullName);
       NotificationManager.showInfo(`Task "${task.fullName}" stopped`);
+    }
+  }
+
+  private stopOneshotTask(task: Task) {
+    const runningTask = this.runningTasks.get(task.fullName);
+    if (runningTask) {
+      runningTask.terminal.sendText("\u0003");
+      setTimeout(() => {}, 100);
+      this.runningTasks.delete(task.fullName);
     }
   }
 

@@ -15,6 +15,7 @@ A VS Code extension that enables users to run configured tasks directly from the
 - 🔄 Set task dependencies with pre-tasks
 - 🖱️ Simple UI: select a task to focus its terminal
 - 🛑 Stop tasks with a click
+- 🎯 Visual status indicators: different icons show task types and states
 
 ## Getting Started
 
@@ -129,6 +130,14 @@ This is particularly useful for development workflows where you frequently run t
 - **Close all terminals**: Click the close button in the panel title (requires confirmation)
 - **Reload configuration**: Click the refresh button in the panel title
 - **Open/create configuration**: Click the settings button in the panel title
+
+### Task Icons
+
+Task icons in the tree view indicate the task type and state:
+
+- **Terminal icon**: Regular task that is not running
+- **Target icon**: Oneshot task
+- **Play icon**: Currently running task
 
 ## License
 

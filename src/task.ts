@@ -24,7 +24,7 @@ export class Task {
     preTasks: string[] = [],
     groupName?: string,
     cwd?: string,
-    oneshot: boolean = false
+    oneshot: boolean = false,
   ) {
     this.name = name;
     this.command = command;

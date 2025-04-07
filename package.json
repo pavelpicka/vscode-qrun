@@ -2,7 +2,7 @@
   "name": "qrun",
   "displayName": "QRun",
   "description": "Quickly run and manage tasks from VS Code",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "publisher": "pavelpicka",
   "author": {
     "name": "Pavel Picka"

@@ -1,10 +1,12 @@
 import * as vscode from "vscode";
 import { Task } from "./task";
 import { NotificationManager } from "./notifications";
+import { TaskTreeProvider } from "./taskTreeProvider";
 
 export class TaskRunner {
   private tasks: Task[] = [];
   private runningTasks: Map<string, { terminal: vscode.Terminal }> = new Map();
+  private treeProvider?: TaskTreeProvider;
 
   constructor(tasks: Task[]) {
     this.tasks = tasks;
@@ -12,6 +14,7 @@ export class TaskRunner {
       for (const [taskName, taskInfo] of this.runningTasks.entries()) {
         if (taskInfo.terminal === terminal) {
           this.runningTasks.delete(taskName);
+          this.refreshTreeView();
           break;
         }
       }
@@ -20,6 +23,16 @@ export class TaskRunner {
 
   setTasks(tasks: Task[]) {
     this.tasks = tasks;
+  }
+
+  setTreeProvider(treeProvider: TaskTreeProvider) {
+    this.treeProvider = treeProvider;
+  }
+
+  private refreshTreeView() {
+    if (this.treeProvider) {
+      this.treeProvider.refresh();
+    }
   }
 
   private findTask(taskName: string): Task | undefined {
@@ -31,7 +44,7 @@ export class TaskRunner {
     if (taskName.includes(".")) {
       const [groupName, name] = taskName.split(".");
       task = this.tasks.find(
-        (t) => t.groupName === groupName && t.name === name
+        (t) => t.groupName === groupName && t.name === name,
       );
       if (task) {
         return task;
@@ -45,7 +58,7 @@ export class TaskRunner {
     try {
       if (!task.oneshot && this.isTaskRunning(task)) {
         NotificationManager.showInfo(
-          `Task "${task.fullName}" is already running. Stop it first or configure as 'oneshot: true' to run multiple instances.`
+          `Task "${task.fullName}" is already running. Stop it first or configure as 'oneshot: true' to run multiple instances.`,
         );
         return;
       }
@@ -66,7 +79,7 @@ export class TaskRunner {
             await new Promise((resolve) => setTimeout(resolve, 500));
           } else {
             NotificationManager.showError(
-              `Pre-task "${preTaskName}" not found`
+              `Pre-task "${preTaskName}" not found`,
             );
           }
         }
@@ -75,9 +88,10 @@ export class TaskRunner {
       terminal.sendText(task.command);
       this.runningTasks.set(task.fullName, { terminal });
       NotificationManager.showInfo(`Task "${task.fullName}" started`);
+      this.refreshTreeView();
     } catch (error) {
       NotificationManager.showError(
-        `Failed to run task "${task.fullName}": ${error}`
+        `Failed to run task "${task.fullName}": ${error}`,
       );
     }
   }
@@ -88,6 +102,7 @@ export class TaskRunner {
       runningTask.terminal.sendText("\u0003");
       this.runningTasks.delete(task.fullName);
       NotificationManager.showInfo(`Task "${task.fullName}" stopped`);
+      this.refreshTreeView();
     }
   }
 
@@ -97,6 +112,7 @@ export class TaskRunner {
       runningTask.terminal.sendText("\u0003");
       setTimeout(() => {}, 100);
       this.runningTasks.delete(task.fullName);
+      this.refreshTreeView();
     }
   }
 
@@ -137,7 +153,7 @@ export class TaskRunner {
     }
 
     const existingTerminal = vscode.window.terminals.find(
-      (t) => t.name === terminalName
+      (t) => t.name === terminalName,
     );
     if (existingTerminal) {
       return existingTerminal;

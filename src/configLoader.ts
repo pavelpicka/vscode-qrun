@@ -16,7 +16,7 @@ export class ConfigLoader {
     return path.join(
       workspaceFolder.uri.fsPath,
       this.CONFIG_FOLDER,
-      this.CONFIG_FILENAME
+      this.CONFIG_FILENAME,
     );
   }
 
@@ -49,8 +49,8 @@ export class ConfigLoader {
               taskConfig.pre || [],
               undefined,
               taskConfig.cwd,
-              taskConfig.oneshot || false
-            )
+              taskConfig.oneshot || false,
+            ),
           );
         }
       });
@@ -68,8 +68,8 @@ export class ConfigLoader {
                   taskConfig.pre || [],
                   groupName,
                   taskConfig.cwd,
-                  taskConfig.oneshot || false
-                )
+                  taskConfig.oneshot || false,
+                ),
               );
             }
           });
@@ -91,11 +91,11 @@ export class ConfigLoader {
   }
 
   public static async createDefaultConfig(
-    workspaceFolder: vscode.WorkspaceFolder
+    workspaceFolder: vscode.WorkspaceFolder,
   ): Promise<void> {
     const vscodeFolder = path.join(
       workspaceFolder.uri.fsPath,
-      this.CONFIG_FOLDER
+      this.CONFIG_FOLDER,
     );
     const configPath = path.join(vscodeFolder, this.CONFIG_FILENAME);
 
@@ -126,7 +126,7 @@ export class ConfigLoader {
       fs.writeFileSync(
         configPath,
         JSON.stringify(defaultConfig, null, 2),
-        "utf8"
+        "utf8",
       );
     }
 

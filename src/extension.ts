@@ -12,30 +12,34 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.workspace.workspaceFolders.length === 0
   ) {
     NotificationManager.showInfo(
-      "QRun requires a workspace folder to operate."
+      "QRun requires a workspace folder to operate.",
     );
     return;
   }
 
   const workspaceFolder = vscode.workspace.workspaceFolders[0];
 
-  const treeProvider = new TaskTreeProvider();
+  const tasks: Task[] = [];
+  const taskRunner = new TaskRunner(tasks);
+  const treeProvider = new TaskTreeProvider(taskRunner);
+  taskRunner.setTreeProvider(treeProvider);
+
   const treeView = vscode.window.createTreeView("qrunTasks", {
     treeDataProvider: treeProvider,
     canSelectMany: false,
   });
 
+  // Focus terminal when selecting a task
   treeView.onDidChangeSelection((e) => {
     if (e.selection.length === 1 && e.selection[0] instanceof TaskTreeItem) {
       const item = e.selection[0] as TaskTreeItem;
-      if (taskRunner.isTaskRunning(item.task)) {
-        taskRunner.focusTerminal(item.task);
+      const task = tasks.find((t) => t.fullName === item.task.fullName);
+      if (task && taskRunner.isTaskRunning(task)) {
+        taskRunner.focusTerminal(task);
       }
     }
   });
 
-  const tasks: Task[] = [];
-  const taskRunner = new TaskRunner(tasks);
   treeProvider.setTasks(tasks);
 
   await loadConfiguration();
@@ -46,7 +50,7 @@ export async function activate(context: vscode.ExtensionContext) {
       async (item: TaskTreeItem) => {
         await taskRunner.runTask(item.task);
         treeProvider.updateTaskState(item.task);
-      }
+      },
     ),
 
     vscode.commands.registerCommand(
@@ -65,7 +69,7 @@ export async function activate(context: vscode.ExtensionContext) {
         }
 
         treeProvider.updateTaskState(item.task);
-      }
+      },
     ),
 
     vscode.commands.registerCommand(
@@ -73,13 +77,13 @@ export async function activate(context: vscode.ExtensionContext) {
       async (item: TaskTreeItem) => {
         if (!taskRunner.isTaskRunning(item.task)) {
           NotificationManager.showInfo(
-            `Task "${item.task.name}" is not running`
+            `Task "${item.task.name}" is not running`,
           );
           return;
         }
         taskRunner.stopTask(item.task);
         treeProvider.updateTaskState(item.task);
-      }
+      },
     ),
 
     vscode.commands.registerCommand("qrun.stopAllTasks", async () => {
@@ -91,7 +95,7 @@ export async function activate(context: vscode.ExtensionContext) {
       const result = await NotificationManager.showWarning(
         "Are you sure you want to stop all running tasks?",
         "Yes",
-        "No"
+        "No",
       );
 
       if (result === "Yes") {
@@ -106,7 +110,7 @@ export async function activate(context: vscode.ExtensionContext) {
         const result = await NotificationManager.showWarning(
           "There are running tasks. Do you want to stop them and close all terminals?",
           "Yes",
-          "No"
+          "No",
         );
 
         if (result === "Yes") {
@@ -147,7 +151,17 @@ export async function activate(context: vscode.ExtensionContext) {
       } catch (error) {
         NotificationManager.showError(`Failed to open configuration: ${error}`);
       }
-    })
+    }),
+
+    vscode.commands.registerCommand(
+      "qrun.treeItemDoubleClick",
+      (taskFullName: string) => {
+        const task = tasks.find((t) => t.fullName === taskFullName);
+        if (task && taskRunner.isTaskRunning(task)) {
+          taskRunner.focusTerminal(task);
+        }
+      },
+    ),
   );
 
   context.subscriptions.push(treeView);
@@ -160,7 +174,7 @@ export async function activate(context: vscode.ExtensionContext) {
         const createConfig = "Create Configuration";
         const response = await NotificationManager.showWarning(
           "No QRun configuration found in this workspace.",
-          createConfig
+          createConfig,
         );
 
         if (response === createConfig) {
@@ -185,11 +199,11 @@ export async function activate(context: vscode.ExtensionContext) {
         error.message.includes("Configuration file not found")
       ) {
         NotificationManager.showInfo(
-          `No QRun configuration found at ${await ConfigLoader.getConfigPath()}. Use the settings icon to create one.`
+          `No QRun configuration found at ${await ConfigLoader.getConfigPath()}. Use the settings icon to create one.`,
         );
       } else {
         NotificationManager.showError(
-          `Failed to load QRun configuration: ${error}`
+          `Failed to load QRun configuration: ${error}`,
         );
       }
     }

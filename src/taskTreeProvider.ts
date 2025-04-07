@@ -1,23 +1,48 @@
 import * as vscode from "vscode";
 import { Task } from "./task";
+import { TaskRunner } from "./taskRunner";
 
 export class TaskTreeItem extends vscode.TreeItem {
   constructor(
     public readonly task: Task,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState
+    public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+    private readonly taskRunner?: TaskRunner,
   ) {
     super(task.name, collapsibleState);
     this.tooltip = task.description;
     this.contextValue = "task";
-    this.command = undefined;
-    this.iconPath = new vscode.ThemeIcon("terminal");
+    this.command = {
+      command: "qrun.treeItemDoubleClick",
+      title: "Focus Terminal",
+      arguments: [task.fullName],
+    };
+    this.updateIcon();
+  }
+
+  private updateIcon() {
+    // Oneshot tasks use 'target' icon
+    if (this.task.oneshot) {
+      this.iconPath = new vscode.ThemeIcon("target");
+      return;
+    }
+
+    // Running tasks use 'play' icon, otherwise use 'terminal'
+    if (this.taskRunner && this.taskRunner.isTaskRunning(this.task)) {
+      this.iconPath = new vscode.ThemeIcon("play");
+    } else {
+      this.iconPath = new vscode.ThemeIcon("terminal");
+    }
+  }
+
+  public refreshIcon() {
+    this.updateIcon();
   }
 }
 
 export class GroupTreeItem extends vscode.TreeItem {
   constructor(
     public readonly groupName: string,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState
+    public readonly collapsibleState: vscode.TreeItemCollapsibleState,
   ) {
     super(groupName, collapsibleState);
     this.contextValue = "group";
@@ -38,9 +63,19 @@ export class TaskTreeProvider
   > = this._onDidChangeTreeData.event;
 
   private tasks: Task[] = [];
+  private taskRunner?: TaskRunner;
+
+  constructor(taskRunner?: TaskRunner) {
+    this.taskRunner = taskRunner;
+  }
 
   public setTasks(tasks: Task[]): void {
     this.tasks = tasks;
+    this.refresh();
+  }
+
+  public setTaskRunner(taskRunner: TaskRunner): void {
+    this.taskRunner = taskRunner;
     this.refresh();
   }
 
@@ -53,7 +88,7 @@ export class TaskTreeProvider
   }
 
   getChildren(
-    element?: TaskTreeItem | GroupTreeItem
+    element?: TaskTreeItem | GroupTreeItem,
   ): Thenable<(TaskTreeItem | GroupTreeItem)[]> {
     if (!this.tasks || this.tasks.length === 0) {
       return Promise.resolve([]);
@@ -78,13 +113,20 @@ export class TaskTreeProvider
 
       for (const task of ungroupedTasks) {
         items.push(
-          new TaskTreeItem(task, vscode.TreeItemCollapsibleState.None)
+          new TaskTreeItem(
+            task,
+            vscode.TreeItemCollapsibleState.None,
+            this.taskRunner,
+          ),
         );
       }
 
       for (const [groupName, groupTasks] of groups) {
         items.push(
-          new GroupTreeItem(groupName, vscode.TreeItemCollapsibleState.Expanded)
+          new GroupTreeItem(
+            groupName,
+            vscode.TreeItemCollapsibleState.Expanded,
+          ),
         );
       }
 
@@ -93,12 +135,17 @@ export class TaskTreeProvider
 
     if (element instanceof GroupTreeItem) {
       const groupTasks = this.tasks.filter(
-        (task) => task.groupName === element.groupName
+        (task) => task.groupName === element.groupName,
       );
       return Promise.resolve(
         groupTasks.map(
-          (task) => new TaskTreeItem(task, vscode.TreeItemCollapsibleState.None)
-        )
+          (task) =>
+            new TaskTreeItem(
+              task,
+              vscode.TreeItemCollapsibleState.None,
+              this.taskRunner,
+            ),
+        ),
       );
     }
 

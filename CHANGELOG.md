@@ -1,16 +1,29 @@
 # Change Log
 
-All notable changes to the "QRun" extension will be documented in this file.
+## [0.2.3] - 2024-04-01
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+### Added
+
+- Visual task status indicators:
+  - Target icon for oneshot tasks
+  - Play icon for running tasks
+  - Terminal icon for standard tasks
+
+### Fixed
+
+- Fixed running task icon not showing correctly in the tree view
 
 ## [0.2.2] - 2024-04-01
+
+### Fixed
+
+- Corrected the order of task buttons to Start, Reload, Stop
+
+## [0.2.1] - 2024-04-01
 
 ### Added
 
 - Reload button for tasks to quickly stop and restart a task
-
-## [0.2.1] - 2024-04-01
 
 ### Changed
 
